@@ -51,7 +51,7 @@ public class Alphabet implements Iterable<Character> {
 
 	public Alphabet union(Alphabet alphabet){
 		Set<Character> ret = this.symbols;
-		for (Character character : ret)
+		for (Character character : alphabet)
 			if (!ret.contains(character)) ret.add(character);
 		return new Alphabet(ret); 
 	}

@@ -84,8 +84,46 @@ public class DFA extends FA {
 	 */
 	@Override
 	public boolean repOk() {
-		//hacer todo
-		return false;
+
+		int initState = 0;
+
+		Set<State> ss = this.delta.keySet();
+
+		for (State s : this.states) {
+			if (s.isInitial())
+				initState++;
+		}
+
+		if (initState != 1)
+			return false;
+
+		for (State s : ss) {
+			if (!states.contains(s)) {
+				return false;
+			} else {
+				Map<Character, StateSet> m = delta.get(s);
+				Set<Character> c = m.keySet();
+
+				for (Character ch : c) {
+					if ((!alphabet.contains(ch)) || (ch == '/')) {
+						return false;
+					} else {
+						StateSet p = new StateSet();
+						p = m.get(ch);
+						if (p.size() > 1) {
+							return false;
+						} else {
+							for (State state : p) {
+								if (!states.contains(state))
+									return false;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -117,8 +155,22 @@ public class DFA extends FA {
 	 *
 	 * @returns a new DFA accepting the intersection of both languages.
 	 */
-	public DFA intersection(DFA other) throws AutomatonException {
-		return null;
+	public DFA intersection(DFA other) throws Exception {
+		DFA result = new DFA();
+
+		DFA aux1 = new DFA();
+
+		DFA aux2 = new DFA();
+
+		aux1.importAtt(this.states, this.alphabet, this.delta);
+		aux2.importAtt(other.states, other.alphabet, other.delta);
+
+		aux1.complement();
+		aux2.complement();
+
+		result.importAtt((aux1.union(aux2)).states, (aux1.union(aux2)).alphabet, (aux1.union(aux2).delta));
+
+		return result.complement();
 	}
 
 	/**
@@ -135,7 +187,45 @@ public class DFA extends FA {
 	 * de una transicion lambda que precede a estos y asi seguir respetando el invariante
 	 */
 	public DFA union(DFA other) throws AutomatonException, Exception {
-		return null;
+
+		StateSet ss = new StateSet();
+
+		ss = states.union(other.states);
+
+		for (State s : ss) {
+			if (s.isInitial())
+				s.setInitial(false);
+		}
+
+		ss.addState("q'", true, false);
+
+		Set<Tupla<State, Character, State>> transitions = new HashSet<Tupla<State, Character, State>>();
+		for (State s1 : this.states) {
+			HashMap<Character, StateSet> a = this.delta.get(s1);
+			Set<Character> x = a.keySet();
+			for (Character c : x) {
+				StateSet y = a.get(c);
+				for (State s2 : y) {
+					Tupla<State, Character, State> t = new Tupla<State,Character,State>(s1, c, s2);
+					transitions.add(t);
+				}
+			}
+		}
+		for (State s1 : other.states) {
+			HashMap<Character, StateSet> a = other.delta.get(s1);
+			Set<Character> x = a.keySet();
+			for (Character c : x) {
+				StateSet y = a.get(c);
+				for (State s2 : y) {
+					Tupla<State, Character, State> t = new Tupla<State,Character,State>(s1, c, s2);
+					transitions.add(t);
+				}
+			}
+		}
+
+		NFALambda result = new NFALambda(ss, this.alphabet, transitions);
+
+		return result.toDFA();
 	}
 
 }

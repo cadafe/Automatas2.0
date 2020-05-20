@@ -78,7 +78,44 @@ public class NFA extends FA {
 	 */
 	@Override
 	public boolean repOk() {
-		//hacer todo
-		return false;
+		
+		int initState = 0;
+
+		Set<State> ss = this.delta.keySet();
+
+		if (alphabet.contains('/'))
+			return false;
+		
+		for (State s : this.states) {
+			if (s.isInitial())
+				initState++;
+		}
+
+		if (initState != 1)
+			return false;
+
+		for (State s : ss) {
+			if (!states.contains(s)) {
+				return false;
+			} else {
+				Map<Character, StateSet> m = delta.get(s);
+				Set<Character> c = m.keySet();
+
+				for (Character ch : c) {
+					if ((!alphabet.contains(ch)) || (ch == '/')) {
+						return false;
+					} else {
+						StateSet p = new StateSet();
+						p = m.get(ch);
+						for (State state : p) {
+							if (!states.contains(state))
+								return false;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 }
