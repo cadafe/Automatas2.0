@@ -122,6 +122,7 @@ public abstract class FA {
 	 *
 	 * @param string String to be tested for acceptance.
 	 * @return Returns true iff the current automaton accepts the given string.
+	 * @throws AutomatonException
 	 */
-	public abstract boolean accepts(String string);	
+	public abstract boolean accepts(String string) throws AutomatonException;	
 }

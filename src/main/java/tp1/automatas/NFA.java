@@ -45,30 +45,45 @@ public class NFA extends FA {
 
 		assert repOk();
 	}
-
 	@Override
-	public boolean accepts(String string) {
-		// assert repOk();
-		// assert string != null;
-		// assert verifyString(string);
-		// Stack<Tupla2<State,Integer>> s = new Stack<Tupla2<State,Integer>>();
-		// Tupla2<State,Integer> t = new Tupla2<State,Integer>(this.initialState(), 0);
-		// s.push(t);
-		// Tupla2<State,Integer> st = null;
-		// while ( !s.empty()) {
-		// 	st = s.pop();
-		// 	if (st.second() < string.length()){
-		// 		StateSet states = delta(st.first(), string.charAt(st.second()));
-		// 		if (states != null){
-		// 			for (State stateAux: states){
-		// 				Tupla2<State,Integer> tup = new Tupla2<State,Integer>(stateAux, st.second()+1);
-		// 				s.push(tup);
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// return st.first().isFinal() && st.second() == string.length();
-		return false;
+	public boolean accepts(String string) throws AutomatonException {
+		
+		
+		Set<State> st = new HashSet<State>();
+		st.add(this.initialState());
+		StateSet aux = new StateSet(st);
+
+		for (Character c : string.toCharArray()) {
+			aux = aux.union(closure(aux, c, false));
+		}
+		return aux.containsSomeOf(this.finalStates());
+	}
+
+	public StateSet closure (StateSet ss, Character c, Boolean total) {
+		// if ss is empty, returns an empty set
+		if (ss.size() == 0) {
+			return new StateSet();
+		} else {
+			StateSet temp;
+			StateSet result = new StateSet();
+			HashMap<Character, StateSet> arcs;
+			// iterates over ss
+			for (State q : ss) {
+				temp = new StateSet();
+				arcs = delta.get(q);
+				// gets the states reached by c, if they exists
+				if (arcs.containsKey(c)) 
+					temp = arcs.get(c);
+		
+				result = result.union(temp);
+			}
+			if (total) {
+				return ss.union(closure(result, c, true));
+			} else {
+				return result;
+			}
+
+		}
 	}
 
 	/**

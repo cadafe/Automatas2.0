@@ -97,6 +97,22 @@ public class StateSet implements Iterable<State>{
 		return states.toString();
 	}
 
+	/**
+	 * compare two StateSets
+	 * @param s StateSet to compare
+	 * @return true if at least one State of s param belongs to the current StateSet
+	 */
+	public boolean containsSomeOf(StateSet s) {
+		return this.states.retainAll(s.getSet());
+	}
+	/**
+	 * gets the corresponding set of states out of the class
+	 * @return a set of states
+	 */
+	public Set<State> getSet() {
+		return this.states;
+	}
+
 	public boolean contains(State state) {
 		return states.contains(state);
 	}
