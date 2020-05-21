@@ -190,12 +190,23 @@ public class DFA extends FA {
 
 		StateSet ss = new StateSet();
 
-		ss = states.union(other.states);
+		State q1 = null;
+		State c1 = null;
+		State qInit = null;
 
-		for (State s : ss) {
+		for (State s : this.states) {
 			if (s.isInitial())
 				s.setInitial(false);
+				q1 = s;
 		}
+
+		for (State s : other.states) {
+			if (s.isInitial())
+				s.setInitial(false);
+				c1 = s;
+		}
+
+		ss = states.union(other.states);
 
 		ss.addState("q'", true, false);
 
@@ -222,6 +233,13 @@ public class DFA extends FA {
 				}
 			}
 		}
+
+		qInit = ss.belongTo("q'");
+
+		Tupla<State, Character, State> t1 = new Tupla<State,Character,State>(qInit, '/', q1);
+		Tupla<State, Character, State> t2 = new Tupla<State,Character,State>(qInit, '/', c1);
+		transitions.add(t1);
+		transitions.add(t2);
 
 		NFALambda result = new NFALambda(ss, this.alphabet, transitions);
 
