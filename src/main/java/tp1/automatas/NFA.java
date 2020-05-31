@@ -23,18 +23,19 @@ public class NFA extends FA {
 		//For each tupla in transitions Set
 		for (Tupla<State, Character, State> tupla : transitions) {
 			currentStateSet = new StateSet();
-			stateArcs =  new HashMap<Character, StateSet>();
 			
 			if (states.belongTo(tupla.first().getName()) != null) {
 				//Gets the hash mapped for the current state if exists
 				if (this.delta.containsKey(tupla.first())) {
 					stateArcs = this.delta.get(tupla.first());
+				} else {
+					stateArcs =  new HashMap<Character, StateSet>();
 				}
 				//Gets the StateSet mapped for the current char
 				if (stateArcs.containsKey(tupla.second())) {
 					currentStateSet = stateArcs.get(tupla.second());
 				}
-				currentStateSet.addState(tupla.third().getName());
+				currentStateSet.addState(tupla.third());
 				stateArcs.put(tupla.second(), currentStateSet);
 				this.delta.put(tupla.first(), stateArcs);
 				
