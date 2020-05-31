@@ -108,6 +108,17 @@ public abstract class FA {
 	}
 
 	/**
+	 * converts the automaton to a string representation of it.
+	 * @return a string representation of the automaton.
+	 */
+	@Override
+	public String toString() {
+		return "( States -> " + states.toString() + " )\n" +
+			"( Alphabet -> "+ alphabet.toString()+ " )\n" +
+			"( State transitions -> " + delta.toString() + " )";
+	}
+
+	/**
 	 * TODO: Abstract methods to be implements for the subclasses
 	 * **/
 
