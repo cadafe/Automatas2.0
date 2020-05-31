@@ -10,7 +10,7 @@ import org.junit.Test;
 import tp1.automatas.State;
 import tp1.automatas.StateSet;
 
-public class DotReaderTests {
+public class DotReaderTest {
 
 	private static DotReader dotReader;
 
