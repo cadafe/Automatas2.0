@@ -54,6 +54,20 @@ public class DFA extends FA {
 		assert repOk();
 	}
 
+	public DFA (DFA a) {
+
+		this.alphabet = a.alphabet;
+		this.states = a.states;
+		this.delta = a.delta;
+		assert repOk();
+	}
+
+	public void importAtt(StateSet s, Alphabet a, HashMap<State, HashMap<Character, StateSet>> d) {
+		this.alphabet = a;
+		this.states = s;
+		this.delta = d;
+	}
+
 	@Override
 	public boolean accepts(String string) throws IllegalArgumentException{
 		assert repOk();
@@ -72,14 +86,7 @@ public class DFA extends FA {
 		}
 		return s.isFinal();
 	}
-
-	public void importAtt(StateSet st, Alphabet a, HashMap<State, HashMap<Character, StateSet>> d) {
-
-		this.states = st;
-		this.alphabet = a;
-		this.delta = d;
-	}
-
+	
 	/**
 	 * Check that one and just one  state is marked to be a initial state.
 	 * Check that all transitions are correct. All states and characters should be part of the automaton set of states and alphabet.
@@ -88,6 +95,9 @@ public class DFA extends FA {
 	 */
 	@Override
 	public boolean repOk() {
+		if (states == null && alphabet == null && delta == null) {
+			return true;
+		}
 
 		int initState = 0;
 
@@ -139,17 +149,34 @@ public class DFA extends FA {
 	 */
 	public DFA complement() {
 		assert repOk();
-		DFA complemento = this;
-
-		for (State s : complemento.states) {
-			if (s.isFinal()) {
-				s.setFinal(false);
-			} else
-				s.setFinal(true);
+		DFA complemento = new DFA(this);
+		for (State ss1 : complemento.states) {
+			switchFinalS(ss1);
 		}
+
+		HashMap<State, HashMap<Character, StateSet>> auxDelta = new HashMap<State, HashMap<Character, StateSet>>(complemento.delta);
+		for (State state : auxDelta.keySet()) {
+			switchFinalS(state);
+		}
+		for (HashMap<Character, StateSet> arcs : auxDelta.values()) {
+			for (StateSet ss : arcs.values()) {
+				for (State sx : ss) {
+					switchFinalS(sx);
+				}
+			}
+		}
+				
+		complemento.delta = auxDelta;
 		return complemento;
 	}
 
+	public void switchFinalS (State s) {
+		if (s.isFinal()) {
+			s.setFinal(false);
+		} else {
+			s.setFinal(true);
+		}
+	}
 
 	/**
 	 * Returns a new automaton which recognizes the intersection of both languages,
