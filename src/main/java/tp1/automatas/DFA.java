@@ -15,22 +15,26 @@ public class DFA extends FA {
 		this.states = states;
 		this.alphabet = alphabet;
 		this.delta = new HashMap<State, HashMap<Character, StateSet>>();
+		
 		HashMap<Character, StateSet> stateArcs;
 		StateSet singletonStateSet;
 
 		for (Tupla<State, Character, State> tupla : transitions) {
-			stateArcs = new HashMap<Character, StateSet>();
 			singletonStateSet = new StateSet();
-
+			
 			if (states.belongTo(tupla.first().getName()) != null) {
-				//Gets the hash mapped for the current state if exists
+				//Gets the map value for the current state if exists
 				if (this.delta.containsKey(tupla.first())) {
 					stateArcs = this.delta.get(tupla.first());
+				} else {
+					stateArcs = new HashMap<Character, StateSet>();
 				}
+				
 				if (stateArcs.containsKey(tupla.second())) {
+					// since dfa must have one transition per character per state
 					throw new IllegalArgumentException("Invalid transitions for DFA");
 				} else {
-					singletonStateSet.addState(tupla.third().getName());
+					singletonStateSet.addState(tupla.third());
 					stateArcs.put(tupla.second(), singletonStateSet);
 					this.delta.put(tupla.first(), stateArcs);
 				}

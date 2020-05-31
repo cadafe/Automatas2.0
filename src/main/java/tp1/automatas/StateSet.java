@@ -34,6 +34,14 @@ public class StateSet implements Iterable<State>{
 		states.add(freshState);
 		return freshState;
 	}
+	
+	public State addState(State s) throws AutomatonException {
+		if (s.getName() == null || s.getName() == "") {
+			throw new AutomatonException("Node name invalid");
+		}
+		states.add(s);
+		return s;
+	}
 
 	public State addState(String name, boolean isInitial, boolean isFinal) throws AutomatonException{
 		if(name == null || name =="")
