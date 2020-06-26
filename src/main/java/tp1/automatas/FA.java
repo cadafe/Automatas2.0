@@ -29,7 +29,6 @@ public abstract class FA {
 		return states;
 	}
 
-
 	/**
 	 * @return the atomaton's alphabet.
 	 */
@@ -37,8 +36,6 @@ public abstract class FA {
 		
 		return alphabet;
 	}
-
-
 
 	/**
 	 * @return the atomaton's initial state.
@@ -51,7 +48,6 @@ public abstract class FA {
 		}
 		return null;
 	}
-
 
 	/**
 	 * @return the atomaton's final states.
@@ -68,7 +64,6 @@ public abstract class FA {
 		return result;
 	}
 
-
 	/**
 	 * Query for the automaton's transition function.
 	 *
@@ -78,7 +73,7 @@ public abstract class FA {
 	 */
 	public  StateSet delta(State from, Character label){
 
-		if (!alphabet.belongTo(label)) 
+		if (!alphabet.belongsTo(label)) 
 			throw new IllegalArgumentException("'label' must belong to the automaton's alphabet");
 			
 		if (!delta.containsKey(from) || states.belongTo(from.getName()) == null)
@@ -91,7 +86,6 @@ public abstract class FA {
 		return s.get(label);
 	}
 
-
 	/**
 	 * Verifies whether the string is composed of characters in the alphabet of the automaton.
 	 * @return True iff the string consists only of characters in the alphabet.
@@ -101,7 +95,7 @@ public abstract class FA {
 		int i = 0;
 
 		while (i < s.length() && control == true) {
-			control = alphabet.belongTo(s.charAt(i));
+			control = alphabet.belongsTo(s.charAt(i));
 			i++;
 		}
 		return control;
