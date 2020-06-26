@@ -16,11 +16,17 @@ public class State {
 	private boolean isInitial;
 
 	public State(String name, boolean isInitial, boolean isFinal) {
-		this.name = name;
+		String name2 = new String(name);
+		this.name = name2;
 		this.isInitial = isInitial;
 		this.isFinal = isFinal;
 	}
-
+	public State(State s) {
+		String name2 = new String(s.getName());
+		this.name = name2;
+		this.isInitial = s.isInitial();
+		this.isFinal = s.isFinal();
+	}
 
 	public String getName() {
 		return this.name;

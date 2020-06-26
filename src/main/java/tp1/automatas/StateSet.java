@@ -18,7 +18,14 @@ public class StateSet implements Iterable<State>{
 	}
 
 	public StateSet(Set<State> states) {
-		this.states = states;
+		Set<State> s = new HashSet<State>();
+		s.addAll(states);
+		this.states = s;
+	}
+
+	public StateSet cloneSS() {
+		StateSet cloned = new StateSet(this.states);
+		return cloned;
 	}
 
 	public State addState(String name)throws AutomatonException{

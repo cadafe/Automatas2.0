@@ -18,7 +18,14 @@ public class Alphabet implements Iterable<Character> {
 	}
 
 	public Alphabet(Set<Character> symbols) {
-		this.symbols = symbols;
+		Set<Character> alpha = new HashSet<Character>();
+		alpha.addAll(symbols);
+		this.symbols = alpha;
+	}
+
+	public Alphabet cloneAlpha() {
+		Alphabet cloned = new Alphabet(this.symbols);
+		return cloned;
 	}
 
 	/**
@@ -43,9 +50,9 @@ public class Alphabet implements Iterable<Character> {
 	/**
 	 * Returns true if this alphabet contains the specified symbol.
 	 * @param c a symbol that we want to check if it belongs to the set or not
-	 * @return true if c belong to this alphabet
+	 * @return true if c belongs to this alphabet
 	**/
-	public boolean belongTo(Character c) {
+	public boolean belongsTo(Character c) {
 		return symbols.contains(c);
 	}
 
@@ -54,6 +61,10 @@ public class Alphabet implements Iterable<Character> {
 		for (Character character : alphabet)
 			if (!ret.contains(character)) ret.add(character);
 		return new Alphabet(ret); 
+	}
+
+	public Set<Character> getSet() {
+		return this.symbols;
 	}
 
 	@Override
