@@ -12,6 +12,7 @@ import tp1.automatas.AutomatonException;
 import tp1.automatas.DFA;
 import tp1.automatas.State;
 import tp1.automatas.StateSet;
+import tp1.utils.Tupla;
 
 public class PatternList {
 	
@@ -46,9 +47,10 @@ public class PatternList {
 	 * @throws Exception
 	 */
 	private DFA buildAutomaton() throws Exception {
+		
 		Alphabet alph = new Alphabet(sigma);
 
-		DFA allUnion = forAllUnion();
+		DFA allUnion = patternsDFA.sigmaStart().forAllUnion().sigmaStart();
 
 		StateSet states = allUnion.getStates();
 
@@ -57,6 +59,7 @@ public class PatternList {
 		return new DFA(states, alph, delta);
 	}
 	
+
 	/*
 	 * This method returns the automaton union 
 	 * of the automata contained in the Patterns list
