@@ -27,7 +27,7 @@ public class patternListTests {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception{
-		DotReader dotReader = new DotReader("test/pattern-dfa");
+		DotReader dotReader = new DotReader("src/test/java/tp1/pattern-dfa");
 		dotReader.parse();
 		
 		StateSet s = dotReader.getNodes();
@@ -35,7 +35,7 @@ public class patternListTests {
 		Set<Tupla<State,Character,State>> t = dotReader.getArcs(); 
 		dfa = new DFA(s,a,t);
 		
-		DotReader dotReader2 = new DotReader("test/pattern-dfa2");
+		DotReader dotReader2 = new DotReader("src/test/java/tp1/pattern-dfa2");
 		dotReader2.parse();
 		
 		StateSet s2 = dotReader2.getNodes();
@@ -43,7 +43,7 @@ public class patternListTests {
 		Set<Tupla<State,Character,State>> t2 = dotReader2.getArcs(); 
 		dfa2 = new DFA(s2,a2,t2);
 		
-		DotReader dotReader3 = new DotReader("test/pattern-dfa3");
+		DotReader dotReader3 = new DotReader("src/test/java/tp1/pattern-dfa3");
 		dotReader3.parse();
 		
 		StateSet s3 = dotReader3.getNodes();
@@ -52,7 +52,7 @@ public class patternListTests {
 		dfa3 = new DFA(s3,a3,t3);
 		
 		
-		DotReader dotReader4 = new DotReader("test/pattern-dfa4");
+		DotReader dotReader4 = new DotReader("src/test/java/tp1/pattern-dfa4");
 		dotReader4.parse();
 		
 		StateSet s4 = dotReader4.getNodes();
