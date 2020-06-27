@@ -50,7 +50,12 @@ public class PatternList {
 		
 		Alphabet alph = new Alphabet(sigma);
 
-		DFA allUnion = patternsDFA.sigmaStart().forAllUnion().sigmaStart();
+		DFA allUnion = patternsDFA.sigmaStart();
+
+		List<DFA> listDFA = new ArrayList<DFA>();
+		listDFA.add(allUnion);
+
+		allUnion = ((PatternList) listDFA).forAllUnion().sigmaStart();
 
 		StateSet states = allUnion.getStates();
 
