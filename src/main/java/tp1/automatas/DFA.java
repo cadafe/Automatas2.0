@@ -313,4 +313,21 @@ public class DFA extends FA {
 		return result.toDFA();
 	}
 
+	public DFA sigmaStart() throws AutomatonException {
+
+		State s = new State("q0", true, true);
+		StateSet ss = new StateSet();
+
+		ss.addState(s);
+
+		Set<Tupla<State, Character, State>> transitions = new HashSet<Tupla<State, Character, State>>();
+
+		for (Character c : this.alphabet.getSet()) {
+			Tupla<State, Character, State> t = new Tupla<State,Character,State>(s, c, s);
+			transitions.add(t);
+		}
+
+		return new DFA(ss, this.alphabet, transitions);
+	}
+
 }
