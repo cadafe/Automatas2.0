@@ -249,10 +249,6 @@ public class DFA extends FA {
 	 *
 	 * @returns a new DFA accepting the union of both languages.
 	 */
-	/**
-	 * ACLARACION: falta hacer en la union de estados iniciales se junten en uno solo, a traves
-	 * de una transicion lambda que precede a estos y asi seguir respetando el invariante
-	 */
 	public DFA union(DFA other) throws AutomatonException, Exception {
 
 		StateSet ss = new StateSet();
@@ -313,21 +309,12 @@ public class DFA extends FA {
 		return result.toDFA();
 	}
 
-	public DFA sigmaStart() throws AutomatonException {
 
-		State s = new State("q0", true, true);
-		StateSet ss = new StateSet();
-
-		ss.addState(s);
-
-		Set<Tupla<State, Character, State>> transitions = new HashSet<Tupla<State, Character, State>>();
-
-		for (Character c : this.alphabet.getSet()) {
-			Tupla<State, Character, State> t = new Tupla<State,Character,State>(s, c, s);
-			transitions.add(t);
-		}
-
-		return new DFA(ss, this.alphabet, transitions);
+	/*
+	 * Implementar la concatenacion entre dos DFA
+	 */
+	public DFA concat(DFA dfa) {
+		return null;
 	}
 
 }

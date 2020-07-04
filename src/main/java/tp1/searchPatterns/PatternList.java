@@ -50,18 +50,11 @@ public class PatternList {
 		
 		Alphabet alph = new Alphabet(sigma);
 
-		DFA allUnion = patternsDFA.sigmaStart();
+		DFA dfa1 = alph.sigmaStar();
 
-		List<DFA> listDFA = new ArrayList<DFA>();
-		listDFA.add(allUnion);
+		DFA dfaUnion = forAllUnion();
 
-		allUnion = ((PatternList) listDFA).forAllUnion().sigmaStart();
-
-		StateSet states = allUnion.getStates();
-
-		HashMap<State, HashMap<Character, StateSet>> delta = allUnion.delta;
-
-		return new DFA(states, alph, delta);
+		return (dfa1.concat(dfaUnion)).concat(dfa1);
 	}
 	
 
@@ -89,7 +82,7 @@ public class PatternList {
 	 * @param line: string to be  scanned.
 	 * */
 	public boolean scan(String line) throws AutomatonException {
-		if (patternsDFA ==null)
+		if (patternsDFA ==null)	
 			throw new AutomatonException();
 		return patternsDFA.accepts(line);
 	}
