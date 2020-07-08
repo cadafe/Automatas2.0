@@ -313,8 +313,45 @@ public class DFA extends FA {
 	/*
 	 * Implementar la concatenacion entre dos DFA
 	 */
-	public DFA concat(DFA dfa) {
-		return null;
+	public DFA concat(DFA dfa) throws AutomatonException {
+		StateSet states1 = this.states;
+		StateSet states2 = dfa.states;
+		StateSet newStates = states1.union(states2);
+
+		Alphabet alphabet1 = this.alphabet;
+		Alphabet alphabet2 = dfa.alphabet;
+		Alphabet newAlphabet = alphabet1.union(alphabet2);
+
+		HashMap<State, HashMap<Character, StateSet>> delta1 = this.delta;
+		HashMap<State, HashMap<Character, StateSet>> delta2 = dfa.delta;
+		HashMap<State, HashMap<Character, StateSet>> newDelta = new HashMap<State, HashMap<Character, StateSet>>();
+		//falta chequear caso donde dos automatas contengan estados con el mismo nombre
+		newDelta.putAll(delta1);
+		newDelta.putAll(delta2);
+		//aqui consideramos que el primer automata tiene solo 1 estado final
+		//en caso de ser necesario en el for each hay que obtener todos los finales en un StateSet
+		//para luego crear correspondientes transiciones
+		Set<State> values1 = delta1.keySet();
+		State final1 = null;
+		for (State s1 : values1) {
+			if (s1.isFinal()) 
+				final1 = new State(s1);
+		}
+
+		Set<State> values2 = delta2.keySet();
+		State initial2 = null;
+		for (State s2 : values2) {
+			if (s2.isInitial()) 
+				initial2 = new State(s2);
+		}
+		StateSet singleton = new StateSet();
+		singleton.addState(initial2);
+
+		HashMap<Character, StateSet> innerMap = newDelta.get(final1);
+		innerMap.put('/', singleton);
+		NFALambda NFALaux = new NFALambda(newStates, newAlphabet, newDelta);
+		DFA finalAutomaton = NFALaux.toDFA();
+		return finalAutomaton;
 	}
 
 }

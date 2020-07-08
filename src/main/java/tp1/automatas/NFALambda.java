@@ -47,6 +47,14 @@ public class NFALambda extends FA {
 		assert repOk();
 	}
 
+	public NFALambda(StateSet states,	Alphabet alphabet, 
+	HashMap<State, HashMap<Character, StateSet>> delta) 
+	throws IllegalArgumentException, AutomatonException{
+		this.alphabet = alphabet;
+		this.states = states;
+		this.delta = delta;
+	}
+
 	@Override
 	public boolean accepts(String string) throws AutomatonException {
 		DFA aux = this.toDFA();
