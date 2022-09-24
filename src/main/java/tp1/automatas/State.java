@@ -4,7 +4,7 @@ package tp1.automatas;
  * @author Fernandez, Camilo
  * @author Manzetti, Mariano
  */
-public class State {
+public class State implements Cloneable{
 
 	//state name
 	private String name;
@@ -21,12 +21,14 @@ public class State {
 		this.isInitial = isInitial;
 		this.isFinal = isFinal;
 	}
-	public State(State s) {
-		String name2 = new String(s.getName());
-		this.name = name2;
-		this.isInitial = s.isInitial();
-		this.isFinal = s.isFinal();
-	}
+
+	// TENGO QUE VER SI SE USA
+	// public State(State s) {
+	// 	String name2 = new String(s.getName());
+	// 	this.name = name2;
+	// 	this.isInitial = s.isInitial();
+	// 	this.isFinal = s.isFinal();
+	// }
 
 	public String getName() {
 		return this.name;
@@ -56,7 +58,6 @@ public class State {
 		return result;
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -78,6 +79,11 @@ public class State {
 	@Override
 	public String toString() {
 		return "(name=" + name + ", isFinal=" + isFinal + ", isInitial=" + isInitial + ")";
+	}
+
+	//Esta bien este clone????
+	public State cloneState() throws CloneNotSupportedException {
+		return (State) super.clone();
 	}
 
 }

@@ -9,7 +9,7 @@ import java.util.Set;
  * @author Fernandez, Camilo
  * @author Manzetti, Mariano
  */
-public class StateSet implements Iterable<State>{
+public class StateSet implements Iterable<State>, Cloneable {
 
 	private Set<State> states;
 
@@ -17,15 +17,20 @@ public class StateSet implements Iterable<State>{
 		states = new HashSet<State>();
 	}
 
-	public StateSet(Set<State> states) {
-		Set<State> s = new HashSet<State>();
-		s.addAll(states);
-		this.states = s;
+
+	//Este puede ser el verdadero clone
+	public StateSet(Set<State> states) throws CloneNotSupportedException {
+		Set<State> ss = new HashSet<State>();
+		for (State s : states) {
+			ss.add(s.cloneState());
+		}
 	}
 
-	public StateSet cloneSS() {
-		StateSet cloned = new StateSet(this.states);
-		return cloned;
+	//VERRRRRR tengo que clonar cada estado?????
+	public StateSet cloneSS() throws CloneNotSupportedException {
+		StateSet css = (StateSet) super.clone();
+		//css.states = states;
+		return css;
 	}
 
 	public State addState(String name)throws AutomatonException{
