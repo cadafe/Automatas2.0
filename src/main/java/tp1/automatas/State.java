@@ -4,7 +4,7 @@ package tp1.automatas;
  * @author Fernandez, Camilo
  * @author Manzetti, Mariano
  */
-public class State implements Cloneable{
+public class State implements Cloneable {
 
 	//state name
 	private String name;
@@ -22,7 +22,7 @@ public class State implements Cloneable{
 		this.isFinal = isFinal;
 	}
 
-	// TENGO QUE VER SI SE USA
+	// // TENGO QUE VER SI SE USA, puede que se reemplace por el cloneState()
 	// public State(State s) {
 	// 	String name2 = new String(s.getName());
 	// 	this.name = name2;
@@ -48,6 +48,10 @@ public class State implements Cloneable{
 
 	public void setFinal(boolean e) {
 		this.isFinal = e;
+	}
+
+	public void setName(String n) {
+		this.name = n;
 	}
 
 	@Override
@@ -81,9 +85,7 @@ public class State implements Cloneable{
 		return "(name=" + name + ", isFinal=" + isFinal + ", isInitial=" + isInitial + ")";
 	}
 
-	//Esta bien este clone????
 	public State cloneState() throws CloneNotSupportedException {
 		return (State) super.clone();
 	}
-
 }

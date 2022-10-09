@@ -26,9 +26,13 @@ public class Alphabet implements Iterable<Character> {
 		this.symbols = alpha;
 	}
 
+	// Ver este clone
 	public Alphabet cloneAlpha() {
-		Alphabet cloned = new Alphabet(this.symbols);
-		return cloned;
+		Alphabet a = new Alphabet();
+		for (Character c : symbols) {
+			a.addSymbol(c);
+		}
+		return (Alphabet) a;
 	}
 
 	/**
