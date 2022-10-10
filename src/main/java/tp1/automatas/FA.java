@@ -6,7 +6,7 @@ import java.util.HashMap;
  * @author Fernandez, Camilo
  * @author Manzetti, Mariano
  */
-public abstract class FA {
+public abstract class FA { //Tengo que usar el clone para getState(), getAlphabet(), initialState(), finalStates(), delta(), verifyString(), accepts(), repOk() ????
 
 	protected StateSet states;
 
@@ -70,8 +70,10 @@ public abstract class FA {
 	 * @return A set of states (when FA is a DFA this method return a
 	 * singleton set) corresponding to the successors of the given state
 	 * via the given label according to the transition function.
+	 * @throws CloneNotSupportedException
+	 * @throws AutomatonException
 	 */
-	public  StateSet delta(State from, Character label){
+	public StateSet delta(State from, Character label) throws CloneNotSupportedException, AutomatonException{
 
 		if (!alphabet.belongsTo(label)) 
 			throw new IllegalArgumentException("'label' must belong to the automaton's alphabet");
@@ -83,7 +85,8 @@ public abstract class FA {
 		if (!s.containsKey(label))
 			throw new IllegalArgumentException("No states mapped for this label");
 
-		return s.get(label);
+		//Tengo que clonar el resultado?????
+		return (s.get(label)).cloneSS();
 	}
 
 	/**
@@ -128,6 +131,7 @@ public abstract class FA {
 	 * @param string String to be tested for acceptance.
 	 * @return Returns true iff the current automaton accepts the given string.
 	 * @throws AutomatonException
+	 * @throws CloneNotSupportedException
 	 */
-	public abstract boolean accepts(String string) throws AutomatonException;	
+	public abstract boolean accepts(String string) throws AutomatonException, CloneNotSupportedException;	
 }

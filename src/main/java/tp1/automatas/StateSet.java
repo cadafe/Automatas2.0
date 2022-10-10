@@ -116,7 +116,11 @@ public class StateSet implements Iterable<State>, Cloneable {
 
 	@Override
 	public String toString() {
-		return states.toString();
+		String str = "( ";
+		for (State s : states) {
+			str += s.toString() + " ";
+		}
+		return str + ")";
 	}
 
 	/**

@@ -76,7 +76,11 @@ public class Alphabet implements Iterable<Character> {
 
 	@Override
 	public String toString() {
-		return symbols.toString();
+		String str = "( ";
+		for (Character c : symbols) {
+			str += c + " ";
+		}
+		return str + ")";
 	}
 
 	public boolean contains(Character c) {
@@ -84,6 +88,7 @@ public class Alphabet implements Iterable<Character> {
 			if (character == c) return true;
 		return false;
 	}
+
 	@Override
 	public Iterator<Character> iterator() {
 		return symbols.iterator();

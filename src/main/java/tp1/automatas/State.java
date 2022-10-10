@@ -76,13 +76,17 @@ public class State implements Cloneable {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
+		if(isFinal != other.isFinal)
+			return false;
+		if(isInitial != other.isInitial)
+			return false;
 		return true;
 	}
 
 
 	@Override
 	public String toString() {
-		return "(name=" + name + ", isFinal=" + isFinal + ", isInitial=" + isInitial + ")";
+		return "(name: " + name + ", isFinal: " + isFinal + ", isInitial: " + isInitial + ")";
 	}
 
 	public State cloneState() throws CloneNotSupportedException {
