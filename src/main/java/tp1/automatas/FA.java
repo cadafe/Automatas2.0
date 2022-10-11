@@ -70,10 +70,9 @@ public abstract class FA { //Tengo que usar el clone para getState(), getAlphabe
 	 * @return A set of states (when FA is a DFA this method return a
 	 * singleton set) corresponding to the successors of the given state
 	 * via the given label according to the transition function.
-	 * @throws CloneNotSupportedException
 	 * @throws AutomatonException
 	 */
-	public StateSet delta(State from, Character label) throws CloneNotSupportedException, AutomatonException{
+	public StateSet delta(State from, Character label) throws AutomatonException {
 
 		if (!alphabet.belongsTo(label)) 
 			throw new IllegalArgumentException("'label' must belong to the automaton's alphabet");
@@ -86,7 +85,7 @@ public abstract class FA { //Tengo que usar el clone para getState(), getAlphabe
 			throw new IllegalArgumentException("No states mapped for this label");
 
 		//Tengo que clonar el resultado?????
-		return (s.get(label)).cloneSS();
+		return s.get(label);
 	}
 
 	/**
