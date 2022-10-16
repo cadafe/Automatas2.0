@@ -47,76 +47,102 @@ public class NFALambda extends FA {
 		assert repOk();
 	}
 
-	public NFALambda(StateSet states,	Alphabet alphabet, 
-	HashMap<State, HashMap<Character, StateSet>> delta) 
-	throws IllegalArgumentException, AutomatonException{
-		this.alphabet = alphabet;
-		this.states = states;
-		this.delta = delta;
-	}
+	// public NFALambda(StateSet states,	Alphabet alphabet, HashMap<State, HashMap<Character, StateSet>> delta) throws IllegalArgumentException, AutomatonException{
+	// 	this.alphabet = alphabet;
+	// 	this.states = states;
+	// 	this.delta = delta;
+	// }
 
 	@Override
-	public boolean accepts(String string) throws AutomatonException {
-		DFA aux = this.toDFA();
-		return aux.accepts(string);
+	public boolean accepts(String string) throws AutomatonException, CloneNotSupportedException {
+		assert repOk();
+		if (string == null) throw new IllegalArgumentException("String can't be null");
+		if (!verifyString(string)) 
+			throw new IllegalArgumentException("The string's characters must belong to automaton's alphabet");
+		
+		State s = this.initialState();
+		return assistantAccepts(s, string);
 	}
+
+	public boolean assistantAccepts(State s, String str) throws AutomatonException {
+		StateSet ss = new StateSet();
+		if(str != null) {
+			ss = delta(s, str.charAt(0));
+			
+			if(ss.size() > 0) {
+				for (State state : ss) {
+					if(str.length()==1) {
+						if(state.isFinal()) {
+							return true;
+						}
+					} else {
+						assistantAccepts(state, str.substring(1));
+					}
+				}
+			} else {
+				return false;
+			}
+		}
+		return false;
+	} 
 
 	
 	/**
 	 * Converts the automaton to a DFA.
 	 * @return DFA recognizing the same language.
 	 * @throws AutomatonException
+	 * @throws CloneNotSupportedException
 	 */
-	public DFA toDFA() throws AutomatonException {
-		assert repOk();
-		Map<StateSet, State> stateRef = new HashMap<StateSet, State>();
+	// public DFA toDFA() throws AutomatonException, CloneNotSupportedException {
+	// 	assert repOk();
+	// 	Map<StateSet, State> stateRef = new HashMap<StateSet, State>();
 		
-		// creates singleton StateSet with initial state 
-		Set<State> aux = new HashSet<State>();
-		aux.add(this.initialState());
-		StateSet initSet = new StateSet(aux);
+	// 	// creates singleton StateSet with initial state 
+	// 	Set<State> aux = new HashSet<State>();
+	// 	aux.add(this.initialState());
+	// 	StateSet initSet = new StateSet(aux);
 		
 		
-		Set<Tupla<StateSet,Character,StateSet>> dfaTransitions = new HashSet<Tupla<StateSet,Character,StateSet>>();
-		// apply lamda closure to initSet
-		initSet = closure(initSet, '/', true);
-		Stack<StateSet> toVisit = new Stack<StateSet>();
-		Set<StateSet> visited = new HashSet<StateSet>();
-		toVisit.push(initSet);
-		// generates all transitions between statesets
-		while(!toVisit.isEmpty()) {
-			dfaTransitions.addAll(buildTransitions(toVisit, visited));
-		}		
-		// maps StateSets visited to States 
-		int j = 0;
-		Set<State> dfaStates = new HashSet<State>();
-		Boolean initialSt = false, finalSt = false;
-		for (StateSet ss : visited) {
-			if (ss.contains(this.initialState())) {
-				initialSt = true;
-			} else {initialSt = false;}
-			if (ss.containsSomeOf(this.finalStates())) {
-				finalSt = true;
-			} else {finalSt = false;}
-			State ns = new State("q"+j, initialSt, finalSt);
-			stateRef.put(ss, ns);
-			dfaStates.add(ns);
-			j++;
-		}
+	// 	Set<Tupla<StateSet,Character,StateSet>> dfaTransitions = new HashSet<Tupla<StateSet,Character,StateSet>>();
+	// 	// apply lamda closure to initSet
+	// 	initSet = closure(initSet, '/', true);
+	// 	Stack<StateSet> toVisit = new Stack<StateSet>();
+	// 	Set<StateSet> visited = new HashSet<StateSet>();
+	// 	toVisit.push(initSet);
+	// 	// generates all transitions between statesets
+	// 	while(!toVisit.isEmpty()) {
+	// 		dfaTransitions.addAll(buildTransitions(toVisit, visited));
+	// 	}		
+	// 	// maps StateSets visited to States 
+	// 	int j = 0;
+	// 	Set<State> dfaStates = new HashSet<State>();
+	// 	Boolean initialSt = false, finalSt = false;
+	// 	for (StateSet ss : visited) {
+	// 		if (ss.contains(this.initialState())) {
+	// 			initialSt = true;
+	// 		} else {initialSt = false;}
+	// 		if (ss.containsSomeOf(this.finalStates())) {
+	// 			finalSt = true;
+	// 		} else {finalSt = false;}
+	// 		State ns = new State("q"+j, initialSt, finalSt);
+	// 		stateRef.put(ss, ns);
+	// 		dfaStates.add(ns);
+	// 		j++;
+	// 	}
 
-		Set<Tupla<State, Character, State>> finalTransitions = new HashSet<Tupla<State, Character, State>>();
-		// transforms <StateSet, Character, StateSet> transitions to <State, Char, State>
-		for (Tupla<StateSet, Character, StateSet> t : dfaTransitions) {
-			State fst = stateRef.get(t.first()); 
-			Character snd = t.second();
-			State trd = stateRef.get(t.third());
-			Tupla<State, Character, State> auxT = new Tupla<State,Character,State>(fst, snd, trd);
-			finalTransitions.add(auxT);
-		}
+	// 	Set<Tupla<State, Character, State>> finalTransitions = new HashSet<Tupla<State, Character, State>>();
+	// 	// transforms <StateSet, Character, StateSet> transitions to <State, Char, State>
+	// 	for (Tupla<StateSet, Character, StateSet> t : dfaTransitions) {
+	// 		State fst = stateRef.get(t.first()); 
+	// 		Character snd = t.second();
+	// 		State trd = stateRef.get(t.third());
+	// 		Tupla<State, Character, State> auxT = new Tupla<State,Character,State>(fst, snd, trd);
+	// 		finalTransitions.add(auxT);
+	// 	}
 		
-		return new DFA(new StateSet(dfaStates), this.alphabet, finalTransitions);
+	// 	return new DFA(new StateSet(dfaStates), this.alphabet, finalTransitions);
 
-	}
+	// }
 
 	
 	/**

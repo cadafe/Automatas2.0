@@ -46,18 +46,50 @@ public class NFA extends FA {
 
 		assert repOk();
 	}
+
 	@Override
 	public boolean accepts(String string) throws AutomatonException {
+		assert repOk();
+		if (string == null) throw new IllegalArgumentException("String can't be null");
+		if (!verifyString(string)) 
+			throw new IllegalArgumentException("The string's characters must belong to automaton's alphabet");
 		
-		
-		Set<State> st = new HashSet<State>();
-		st.add(this.initialState());
-		StateSet aux = new StateSet(st);
+		State s = this.initialState();
+		return assistantAccepts(s, string);
+	}
 
-		for (Character c : string.toCharArray()) {
-			aux = aux.union(closure(aux, c, false));
+	public boolean assistantAccepts(State s, String str) throws AutomatonException {
+		StateSet ss = new StateSet();
+		StateSet ssl = new StateSet();
+		if(str != null) {
+			ss = delta(s, str.charAt(0));
+			ssl = delta(s, '/');
+			if(ssl.size() > 0) {
+				ss.union(assistantAccepts2(ssl, str.charAt(0)));
+			}
+			if(ss.size() > 0) {
+				for (State state : ss) {
+					if(str.length()==1) {
+						if(state.isFinal()) {
+							return true;
+						}
+					} else {
+						assistantAccepts(state, str.substring(1));
+					}
+				}
+			} else {
+				return false;
+			}
 		}
-		return aux.containsSomeOf(this.finalStates());
+		return false;
+	} 
+
+	public StateSet assistantAccepts2(StateSet ssl, Character c) throws AutomatonException {
+		StateSet ss = new StateSet();
+		for (State state : ssl) {
+			ss.union(delta(state, c));
+		}
+		return ss;
 	}
 
 	public StateSet closure (StateSet ss, Character c, Boolean total) {
@@ -118,7 +150,7 @@ public class NFA extends FA {
 				Set<Character> c = m.keySet();
 
 				for (Character ch : c) {
-					if ((!alphabet.contains(ch)) || (ch == '/')) {
+					if (!alphabet.contains(ch)) {
 						return false;
 					} else {
 						StateSet p = new StateSet();
