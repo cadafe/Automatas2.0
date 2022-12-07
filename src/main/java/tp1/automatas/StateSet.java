@@ -142,4 +142,16 @@ public class StateSet implements Iterable<State>, Cloneable {
 	public boolean contains(State state) {
 		return states.contains(state);
 	}
+
+	public boolean containsAll(StateSet ss) {
+		if(ss.size() == 0)
+			return false;
+
+		for (State s : ss) {
+			if(!contains(s))
+				return false;
+		}
+		
+		return true;
+	}
 }

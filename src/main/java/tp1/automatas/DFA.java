@@ -241,65 +241,55 @@ public class DFA extends FA {
 	 *
 	 * @returns a new DFA accepting the union of both languages.
 	 */
-	// public DFA union(DFA other) throws AutomatonException, Exception {
+	public DFA union(DFA other) throws AutomatonException, Exception {
+		// New initial state
+		State newInitState = new State("q'", true, false);
+		// New StateSet
+		StateSet ss = new StateSet(); 
+		//New Alphabet
+		Alphabet a = new Alphabet();
+		// New Transitions
+		Set<Tupla<State, Character, State>> t = new HashSet<Tupla<State, Character, State>>();
 
-	// 	StateSet ss = new StateSet();
+		// New cloned StateSet 
+		ss = (this.states).cloneSS();
+		ss.union((other.states).cloneSS());
 
-	// 	State q1 = null;
-	// 	State c1 = null;
-	// 	State qInit = null;
+		for (State s : ss) {
+			if(s.isInitial()) {
+				s.setInitial(false);
+				t.add(new Tupla<State,Character,State>(newInitState, '/', s));
+			} 
+		}
+		
+		ss.addState(newInitState);
 
-	// 	for (State s : this.states) {
-	// 		if (s.isInitial())
-	// 			s.setInitial(false);
-	// 			q1 = s;
-	// 	}
+		// New cloned Alphabet
+		a = (this.alphabet).cloneAlpha();
+		a.union((other.alphabet).cloneAlpha());
 
-	// 	for (State s : other.states) {
-	// 		if (s.isInitial())
-	// 			s.setInitial(false);
-	// 			c1 = s;
-	// 	}
+		// New cloned this.delta
+		for (State s : this.states) {
+			for (Character c : this.alphabet) {
+				StateSet setD = this.delta(s, c);
+				if(setD.size() > 0) {
+					t.add(new Tupla<State,Character,State>(s.cloneState(), c, (setD.get(0)).cloneState()));
+				}
+			}
+		}
 
-	// 	ss = states.union(other.states);
+		// New cloned other.delta
+		for (State s : other.states) {
+			for (Character c : other.alphabet) {
+				StateSet setD = other.delta(s, c);
+				if(setD.size() > 0) {
+					t.add(new Tupla<State,Character,State>(s.cloneState(), c, (setD.get(0)).cloneState()));
+				}
+			}
+		}
 
-	// 	ss.addState("q'", true, false);
-
-	// 	Set<Tupla<State, Character, State>> transitions = new HashSet<Tupla<State, Character, State>>();
-	// 	for (State s1 : this.states) {
-	// 		HashMap<Character, StateSet> a = this.delta.get(s1);
-	// 		Set<Character> x = a.keySet();
-	// 		for (Character c : x) {
-	// 			StateSet y = a.get(c);
-	// 			for (State s2 : y) {
-	// 				Tupla<State, Character, State> t = new Tupla<State,Character,State>(s1, c, s2);
-	// 				transitions.add(t);
-	// 			}
-	// 		}
-	// 	}
-	// 	for (State s1 : other.states) {
-	// 		HashMap<Character, StateSet> a = other.delta.get(s1);
-	// 		Set<Character> x = a.keySet();
-	// 		for (Character c : x) {
-	// 			StateSet y = a.get(c);
-	// 			for (State s2 : y) {
-	// 				Tupla<State, Character, State> t = new Tupla<State,Character,State>(s1, c, s2);
-	// 				transitions.add(t);
-	// 			}
-	// 		}
-	// 	}
-
-	// 	qInit = ss.belongTo("q'");
-
-	// 	Tupla<State, Character, State> t1 = new Tupla<State,Character,State>(qInit, '/', q1);
-	// 	Tupla<State, Character, State> t2 = new Tupla<State,Character,State>(qInit, '/', c1);
-	// 	transitions.add(t1);
-	// 	transitions.add(t2);
-
-	// 	NFALambda result = new NFALambda(ss, this.alphabet, transitions);
-
-	// 	return result.toDFA();
-	// }
+		return new DFA(ss, a, t);
+	}
 
 
 	/*
