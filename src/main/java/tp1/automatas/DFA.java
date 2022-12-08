@@ -185,31 +185,37 @@ public class DFA extends FA {
 	 *
 	 * @returns a new DFA accepting the language's complement.
 	 */
-	// public DFA complement() throws CloneNotSupportedException {
+	public DFA complement(DFA other) throws CloneNotSupportedException, AutomatonException {
 		
-	// 	assert repOk();
-	// 	// copy of the original dfa
-	// 	DFA complemento = new DFA(this.states, this.alphabet, this.delta);
-		
-	// 	for (State s1 : complemento.states) {
-	// 		s1.setFinal(!s1.isFinal());
-	// 	}
-		
-	// 	HashMap<State, HashMap<Character, StateSet>> auxDelta = complemento.delta;
-	// 	for (State state : auxDelta.keySet()) {
-	// 		state.setFinal(!state.isFinal());
-	// 	}
-	// 	for (HashMap<Character, StateSet> arcs : auxDelta.values()) {
-	// 		for (StateSet ss : arcs.values()) {
-	// 			for (State sx : ss) {
-	// 				sx.setFinal(!sx.isFinal());
-	// 			}
-	// 		}
-	// 	}
-				
-	// 	complemento.delta = cloneDelta(auxDelta);
-	// 	return complemento;
-	// }
+		assert other.repOk();
+
+		StateSet ss = new StateSet();
+		Alphabet a = new Alphabet();
+		Set<Tupla<State,Character,State>> t = new HashSet<Tupla<State,Character,State>>();
+
+		ss = (other.states).cloneSS();
+		for (State s : ss) {
+			if(s.isFinal()) {
+				s.setFinal(false);
+			} else {
+				s.setFinal(true);
+			}
+		}
+
+		a = (other.alphabet).cloneAlpha();
+
+		// New cloned other.delta
+		for (State s : other.states) {
+			for (Character c : other.alphabet) {
+				StateSet setD = other.delta(s, c);
+				if(setD.size() > 0) {
+					t.add(new Tupla<State,Character,State>(s.cloneState(), c, (setD.get(0)).cloneState()));
+				}
+			}
+		}
+
+		return new DFA(ss, a, t);
+	}
 
 	/**
 	 * Returns a new automaton which recognizes the intersection of both languages,
@@ -242,6 +248,9 @@ public class DFA extends FA {
 	 * @returns a new DFA accepting the union of both languages.
 	 */
 	public DFA union(DFA other) throws AutomatonException, Exception {
+		assert repOk();
+		assert other.repOk();
+		
 		// New initial state
 		State newInitState = new State("q'", true, false);
 		// New StateSet
