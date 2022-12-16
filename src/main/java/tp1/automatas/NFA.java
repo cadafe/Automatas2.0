@@ -92,33 +92,6 @@ public class NFA extends FA {
 		return ss;
 	}
 
-	public StateSet closure (StateSet ss, Character c, Boolean total) {
-		// if ss is empty, returns an empty set
-		if (ss.size() == 0) {
-			return new StateSet();
-		} else {
-			StateSet temp;
-			StateSet result = new StateSet();
-			HashMap<Character, StateSet> arcs;
-			// iterates over ss
-			for (State q : ss) {
-				temp = new StateSet();
-				arcs = delta.get(q);
-				// gets the states reached by c, if they exists
-				if (arcs.containsKey(c)) 
-					temp = arcs.get(c);
-		
-				result = result.union(temp);
-			}
-			if (total) {
-				return ss.union(closure(result, c, true));
-			} else {
-				return result;
-			}
-
-		}
-	}
-
 	/**
 	 * Check that the alphabet does not contains lambda.
 	 * Check that one and just one state is marked to be a initial state.

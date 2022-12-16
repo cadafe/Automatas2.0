@@ -69,7 +69,7 @@ public class DotReaderTest {
 		//arrange
 		StateSet states = dotReader.getNodes();
 		Set<Tupla<State,Character,State>> arcs = dotReader.getArcs();
-		Tupla<State,Character,State>  arc= new Tupla<State, Character, State>(states.belongTo("q1"),new Character('a'),states.belongTo("q2"));
+		Tupla<State,Character,State>  arc= new Tupla<State, Character, State>(states.belongTo("q1"),'a',states.belongTo("q2"));
 
 		//assert
 		assertTrue(arcs.contains(arc));

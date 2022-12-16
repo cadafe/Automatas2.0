@@ -1,9 +1,9 @@
 package tp1.automatas;
 
-import java.util.Set;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,21 +11,23 @@ import org.junit.Test;
 import tp1.utils.DotReader;
 import tp1.utils.Tupla;
 
-public class DFAAutomatonMethodsTests2 {
-
-	private static StateSet s;
+public class DFAAutomatonMethodsTests5 {
+    private static StateSet s;
 	private static Alphabet a;
 	private static Set<Tupla<State,Character,State>> t;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception{
-		DotReader dotReader = new DotReader("src/test/java/tp1/dfa2");
+		DotReader dotReader = new DotReader("src/test/java/tp1/dfa5");
 		dotReader.parse();
+
 
 		s = dotReader.getNodes();
 		a = dotReader.getSymbols();
 		t = dotReader.getArcs();
-	}
+	} 
+
+    // Tests for DFA5
 
 	@Test
 	public void testRepOk() throws Exception {
@@ -33,31 +35,33 @@ public class DFAAutomatonMethodsTests2 {
 		assertTrue(dfa.repOk());
 	}
 
-	// Tests for DFA2
 	@Test
 	public void testAccept() throws Exception {
 		DFA dfa0 = new DFA(s,a,t);
-		assertTrue(dfa0.accepts("bbbbbb"));
+		assertTrue(dfa0.accepts("aa"));
 	}
 
-	@Test
+    @Test
 	public void testNoAccept() throws Exception {
 		DFA dfa1 = new DFA(s,a,t);
-		assertFalse(dfa1.accepts("bbbbb"));
+		assertFalse(dfa1.accepts("aaa"));
 	}
 
 	@Test
-	public void testComplement1() throws Exception {
-		DFA dfa2 = new DFA(s,a,t);
-		DFA dfaComplement = dfa2.complement();
-		assertFalse(dfaComplement.accepts("bb"));
+	public void testAccept2() throws Exception {
+		DFA dfa0 = new DFA(s,a,t);
+		assertTrue(dfa0.accepts("aab"));
 	}
 
 	@Test
-	public void testComplement2() throws Exception {
-		DFA dfa3 = new DFA(s,a,t);
-		DFA dfaComplement = dfa3.complement();
-		assertTrue(dfaComplement.accepts("b"));
+	public void testAccept3() throws Exception {
+		DFA dfa0 = new DFA(s,a,t);
+		assertTrue(dfa0.accepts("aabb"));
 	}
 
+	@Test
+	public void testNoAccept2() throws Exception {
+		DFA dfa1 = new DFA(s,a,t);
+		assertFalse(dfa1.accepts("aaba"));
+	}
 }

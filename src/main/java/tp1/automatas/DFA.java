@@ -47,58 +47,6 @@ public class DFA extends FA {
 		assert repOk();
 	}
 
-	// public DFA(StateSet ss, Alphabet aa, HashMap<State, HashMap<Character, StateSet>> delt) throws CloneNotSupportedException, AutomatonException {
-	// 	Alphabet cAlpha = aa.cloneAlpha();
-	// 	StateSet cSS = ss.cloneSS();
-	// 	this.states = cSS;
-	// 	this.alphabet = cAlpha;
-	// 	HashMap<State, HashMap<Character, StateSet>> clonedDelta =
-	// 	new HashMap<State, HashMap<Character, StateSet>>();	
-	// 	clonedDelta = cloneDelta(delt);
-	// 	this.delta = clonedDelta;
-	// }
-
-	// // Deep copy of delta transitions
-	// public HashMap<State, HashMap<Character, StateSet>> cloneDelta(
-	// HashMap<State, HashMap<Character, StateSet>> d) throws CloneNotSupportedException {
-	// 	HashMap<State, HashMap<Character, StateSet>> dcopy = new HashMap<State, HashMap<Character, StateSet>>();
-	// 	for (Map.Entry<State, HashMap<Character, StateSet>> entry : d.entrySet()) {
-	// 		HashMap<Character, StateSet> cArcs = new HashMap<Character, StateSet>();
-	// 		cArcs = cloneArcs(entry.getValue());
-	// 		State s = new State(entry.getKey());
-	// 		dcopy.put(s, cArcs);
-	// 	}
-	// 	return dcopy;
-	// }
-
-	// // Makes a deep copy of intern map
-	// public HashMap<Character, StateSet> cloneArcs(HashMap<Character, StateSet> original) throws CloneNotSupportedException {
-	// 	HashMap<Character, StateSet> copy = new HashMap<Character, StateSet>();
-	// 	for (Map.Entry<Character, StateSet> arc : original.entrySet()) {
-	// 		StateSet clonedSS = new StateSet();
-	// 		clonedSS = arc.getValue().cloneSS();
-	// 		copy.put(arc.getKey(), clonedSS);
-	// 	}
-	// 	return copy;
-	// }
-	
-	public DFA() {
-		this.states = null;
-		this.alphabet = null;
-		this.delta = null;
-		assert repOk();
-	}
-
-	// public DFA cloneDFA() throws CloneNotSupportedException {
-	// 	Alphabet clonedAlphabet = this.alphabet.cloneAlpha();
-	// 	StateSet clonedStates = this.states.cloneSS();
-	// 	HashMap<State, HashMap<Character, StateSet>> clonedDelta = new HashMap<State, HashMap<Character, StateSet>>();
-	// 	clonedDelta.putAll(this.delta);
-	// 	DFA clonedDFA = new DFA(clonedStates, clonedAlphabet, clonedDelta);
-	// 	return clonedDFA;
-	// }
-
-	//Chequear linea 111 y 116
 	@Override
 	public boolean accepts(String string) throws IllegalArgumentException, AutomatonException{
 		assert repOk();
@@ -109,7 +57,11 @@ public class DFA extends FA {
 		State s = this.initialState();
 		for (char c : string.toCharArray()) {
 			StateSet singletonSet = new StateSet();
-			singletonSet = delta(s, c);
+			try {
+				singletonSet = delta(s, c);
+			} catch (Exception e) {
+				return false;
+			}
 			System.out.println("im "+c+"!");
 			System.out.println(s.toString());
 			if (singletonSet.size() > 0) {
@@ -185,15 +137,15 @@ public class DFA extends FA {
 	 *
 	 * @returns a new DFA accepting the language's complement.
 	 */
-	public DFA complement(DFA other) throws CloneNotSupportedException, AutomatonException {
+	public DFA complement() throws CloneNotSupportedException, AutomatonException {
 		
-		assert other.repOk();
+		assert repOk();
 
 		StateSet ss = new StateSet();
 		Alphabet a = new Alphabet();
 		Set<Tupla<State,Character,State>> t = new HashSet<Tupla<State,Character,State>>();
 
-		ss = (other.states).cloneSS();
+		ss = (states).cloneSS();
 		for (State s : ss) {
 			if(s.isFinal()) {
 				s.setFinal(false);
@@ -202,19 +154,33 @@ public class DFA extends FA {
 			}
 		}
 
-		a = (other.alphabet).cloneAlpha();
+		a = alphabet.cloneAlpha();
 
-		// New cloned other.delta
-		for (State s : other.states) {
-			for (Character c : other.alphabet) {
-				StateSet setD = other.delta(s, c);
+		// New cloned delta
+		for (State s : states) {
+			State s1 = s.cloneState();
+			if(s1.isFinal()) {
+				s1.setFinal(false);
+			} else {
+				s1.setFinal(true);
+			}
+			for (Character c : alphabet) {
+				StateSet setD = delta(s, c);
 				if(setD.size() > 0) {
-					t.add(new Tupla<State,Character,State>(s.cloneState(), c, (setD.get(0)).cloneState()));
+					State s2 = (setD.get(0)).cloneState();
+					if(s2.isFinal()) {
+						s2.setFinal(false);
+					} else {
+						s2.setFinal(true);
+					}
+					t.add(new Tupla<State,Character,State>(s1, c, s2));
 				}
 			}
 		}
 
-		return new DFA(ss, a, t);
+		DFA newDFA = new DFA(ss, a, t);
+
+		return newDFA;
 	}
 
 	/**
@@ -225,18 +191,13 @@ public class DFA extends FA {
 	 *
 	 * @returns a new DFA accepting the intersection of both languages.
 	 */
-	// public DFA intersection(DFA other) throws Exception {
-		
-	// 	DFA aux1 = new DFA(this.states, this.alphabet, this.delta);
+	public DFA intersection(DFA other) throws Exception {
 
-	// 	DFA aux2 = new DFA(other.states, other.alphabet, other.delta);
-
-	// 	aux1.complement();
-	// 	aux2.complement();
-	// 	DFA result = new DFA((aux1.union(aux2)).states, (aux1.union(aux2)).alphabet, (aux1.union(aux2).delta));
+		assert repOk();
+		assert other.repOk();
 		
-	// 	return result.complement();
-	// }
+		return (complement().union(other.complement())).complement();
+	}
 
 	/**
 	 * Returns a new automaton which recognizes the union of both languages, the one
@@ -296,6 +257,10 @@ public class DFA extends FA {
 				}
 			}
 		}
+
+		//NFALambda newNFA = new NFALambda(ss, a, t);
+		//DFA newDFA = newNFA.toDFA();
+		//assert newDFA.repOk();
 
 		return new DFA(ss, a, t);
 	}

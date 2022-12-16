@@ -8,7 +8,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	DFAAutomatonMethodsTests1.class, 
 	DFAAutomatonMethodsTests2.class,
-	DFAAutomatonMethodsTests3.class
+	DFAAutomatonMethodsTests3.class,
+	DFAAutomatonMethodsTests4.class,
+	DFAAutomatonMethodsTests5.class
 })
 public class AllDFAAutomatonMethodsTest {
 

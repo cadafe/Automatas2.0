@@ -84,7 +84,6 @@ public abstract class FA { //Tengo que usar el clone para getState(), getAlphabe
 		if (!s.containsKey(label))
 			throw new IllegalArgumentException("No states mapped for this label");
 
-		//Tengo que clonar el resultado?????
 		return s.get(label);
 	}
 

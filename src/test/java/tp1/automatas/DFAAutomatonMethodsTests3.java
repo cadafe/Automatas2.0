@@ -27,7 +27,13 @@ import tp1.utils.Tupla;
 		t = dotReader.getArcs();
 	}
 
-	 // Tests for DFA3
+	// Tests for DFA3
+
+	@Test
+	public void testRepOk() throws Exception {
+		DFA dfa = new DFA(s,a,t);
+		assertTrue(dfa.repOk());
+	}
 
 	@Test
 	public void testAccept() throws Exception {
@@ -41,17 +47,17 @@ import tp1.utils.Tupla;
 		assertFalse(dfa.accepts("aa"));
 	}
 	
-	@Test
-	public void testComplement1() throws Exception {
-		DFA dfa = new DFA(s,a,t);
-		assertFalse(dfa.complement().accepts("aaa"));
-	}
+	// @Test
+	// public void testComplement1() throws Exception {
+	// 	DFA dfa = new DFA(s,a,t);
+	// 	assertFalse(dfa.complement().accepts("aaa"));
+	// }
 	
-	@Test
-	public void testComplement2() throws Exception {
-		DFA dfa = new DFA(s,a,t);
-		assertTrue(dfa.complement().accepts("aa"));
-	}	
+	// @Test
+	// public void testComplement2() throws Exception {
+	// 	DFA dfa = new DFA(s,a,t);
+	// 	assertTrue(dfa.complement().accepts("aa"));
+	// }	
 	
 	// Other Tests
 	

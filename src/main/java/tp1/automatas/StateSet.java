@@ -17,16 +17,6 @@ public class StateSet implements Iterable<State>, Cloneable {
 		states = new HashSet<State>();
 	}
 
-
-	// //Este puede ser el verdadero clone
-	// public StateSet(Set<State> states) throws CloneNotSupportedException {
-	// 	Set<State> ss = new HashSet<State>();
-	// 	for (State s : states) {
-	// 		ss.add(s.cloneState());
-	// 	}
-	// }
-
-	//VERRRRRR tengo que clonar cada estado?????
 	public StateSet cloneSS() throws CloneNotSupportedException, AutomatonException {
 		StateSet css = new StateSet();
 		for (State s : states) {
