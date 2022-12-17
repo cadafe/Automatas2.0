@@ -54,7 +54,7 @@ public class PatternList {
 
 		DFA dfaUnion = forAllUnion();
 
-		return (dfa1.concat(dfaUnion)).concat(dfa1);
+		return null;
 	}
 	
 

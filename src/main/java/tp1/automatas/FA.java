@@ -6,7 +6,7 @@ import java.util.HashMap;
  * @author Fernandez, Camilo
  * @author Manzetti, Mariano
  */
-public abstract class FA { //Tengo que usar el clone para getState(), getAlphabet(), initialState(), finalStates(), delta(), verifyString(), accepts(), repOk() ????
+public abstract class FA {
 
 	protected StateSet states;
 

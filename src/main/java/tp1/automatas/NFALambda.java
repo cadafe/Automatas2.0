@@ -319,7 +319,7 @@ public class NFALambda extends FA {
 				Set<Character> c = m.keySet();
 
 				for (Character ch : c) {
-					if ((ch != '/') && (!alphabet.contains(ch))) {
+					if ((ch != null) && (!alphabet.contains(ch))) {
 						return false;
 					} else {
 						StateSet p = new StateSet();

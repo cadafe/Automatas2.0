@@ -13,6 +13,7 @@ import tp1.utils.Tupla;
 
 	public class DFAAutomatonMethodsTests3 {
 
+		private static DFA dfa;
 		private static StateSet s;
 		private static Alphabet a;
 		private static Set<Tupla<State,Character,State>> t;
@@ -25,66 +26,72 @@ import tp1.utils.Tupla;
 		s = dotReader.getNodes();
 		a = dotReader.getSymbols();
 		t = dotReader.getArcs();
+
+		dfa = new DFA(s, a, t);
 	}
 
 	// Tests for DFA3
 
 	@Test
 	public void testRepOk() throws Exception {
-		DFA dfa = new DFA(s,a,t);
 		assertTrue(dfa.repOk());
 	}
 
 	@Test
 	public void testAccept() throws Exception {
-		DFA dfa = new DFA(s,a,t);
 		assertTrue(dfa.accepts("aaa"));
 	}
 
 	@Test
+	public void testAccept2() throws Exception {
+		assertTrue(dfa.accepts("a"));
+	}
+
+	@Test
 	public void testNoAccept() throws Exception {
-		DFA dfa = new DFA(s,a,t);
 		assertFalse(dfa.accepts("aa"));
 	}
-	
-	// @Test
-	// public void testComplement1() throws Exception {
-	// 	DFA dfa = new DFA(s,a,t);
-	// 	assertFalse(dfa.complement().accepts("aaa"));
-	// }
-	
-	// @Test
-	// public void testComplement2() throws Exception {
-	// 	DFA dfa = new DFA(s,a,t);
-	// 	assertTrue(dfa.complement().accepts("aa"));
-	// }	
-	
-	// Other Tests
+
+	@Test
+	public void testNoAccept2() throws Exception {
+		assertFalse(dfa.accepts(""));
+	}
 	
 	@Test
-	public void testFinalState1() throws Exception {
-		DFA dfa = new DFA(s,a,t);
-		StateSet f = dfa.finalStates();
-		assertTrue(f.size()==1);
+	public void testComplement1() throws Exception {
+		assertFalse(dfa.complement().accepts("aaa"));
 	}
+
+	@Test
+	public void testComplement2() throws Exception {
+		assertFalse(dfa.complement().accepts("a"));
+	}
+	
+	@Test
+	public void testComplement3() throws Exception {
+		assertTrue(dfa.complement().accepts("aa"));
+	}	
+
+	@Test
+	public void testComplement4() throws Exception {
+		assertTrue(dfa.complement().accepts(""));
+	}	
 	
 	@Test
 	public void testFinalState2() throws Exception {
-		DFA dfa = new DFA(s,a,t);
 		StateSet f = dfa.finalStates();
+		assertTrue(f.size()==1);
 		assertTrue(f.belongTo("q1")!=null);
 	}
 	
 	@Test
 	public void testFinalState3() throws Exception {
-		DFA dfa = new DFA(s,a,t);
 		StateSet f = dfa.finalStates();
 		assertTrue(f.belongTo("q0")==null);
 	}
 	
 	@Test
 	public void testInitialState() throws Exception {
-		DFA dfa = new DFA(s,a,t);
 		State i = dfa.initialState();
 		assertTrue(i.getName().equals("q0"));
 	}

@@ -63,7 +63,7 @@ public class NFA extends FA {
 		StateSet ssl = new StateSet();
 		if(str != null) {
 			ss = delta(s, str.charAt(0));
-			ssl = delta(s, '/');
+			ssl = delta(s, null);
 			if(ssl.size() > 0) {
 				ss.union(assistantAccepts2(ssl, str.charAt(0)));
 			}
@@ -103,9 +103,6 @@ public class NFA extends FA {
 		int initState = 0;
 
 		Set<State> ss = this.delta.keySet();
-
-		if (alphabet.contains('/'))
-			return false;
 		
 		for (State s : this.states) {
 			if (s.isInitial())

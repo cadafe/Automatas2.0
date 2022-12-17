@@ -44,7 +44,30 @@ public class DFA extends FA {
 			}
 		}
 
-		assert repOk();
+		//assert repOk();
+	}
+
+	public DFA cloneDFA() throws CloneNotSupportedException, AutomatonException{
+		StateSet ss = states.cloneSS();
+		Alphabet a = alphabet.cloneAlpha();
+		Set<Tupla<State, Character, State>> t = cloneDelta();
+
+		return new DFA(ss, a, t);
+	}
+
+	public Set<Tupla<State, Character, State>> cloneDelta() throws CloneNotSupportedException, AutomatonException{
+		Set<Tupla<State, Character, State>> t = new HashSet<Tupla<State, Character, State>>();
+
+		for (State s : states) {
+			for (Character c : alphabet) {
+				StateSet setD = delta(s, c);
+				if(setD.size() > 0) {
+					t.add(new Tupla<State,Character,State>(s.cloneState(), c, (setD.get(0)).cloneState()));
+				}
+			}
+		}
+
+		return t;
 	}
 
 	@Override
@@ -107,7 +130,7 @@ public class DFA extends FA {
 				Set<Character> c = m.keySet();
 
 				for (Character ch : c) {
-					if ((!alphabet.contains(ch)) || (ch == '/')) {
+					if ((!alphabet.contains(ch)) || (ch == null)) {
 						return false;
 					} else {
 						StateSet p = new StateSet();
@@ -141,11 +164,13 @@ public class DFA extends FA {
 		
 		assert repOk();
 
+		DFA dfa = cloneDFA();
+
 		StateSet ss = new StateSet();
 		Alphabet a = new Alphabet();
 		Set<Tupla<State,Character,State>> t = new HashSet<Tupla<State,Character,State>>();
 
-		ss = (states).cloneSS();
+		ss = dfa.states.cloneSS();
 		for (State s : ss) {
 			if(s.isFinal()) {
 				s.setFinal(false);
@@ -154,18 +179,18 @@ public class DFA extends FA {
 			}
 		}
 
-		a = alphabet.cloneAlpha();
+		a = dfa.alphabet.cloneAlpha();
 
 		// New cloned delta
-		for (State s : states) {
+		for (State s : dfa.states) {
 			State s1 = s.cloneState();
 			if(s1.isFinal()) {
 				s1.setFinal(false);
 			} else {
 				s1.setFinal(true);
 			}
-			for (Character c : alphabet) {
-				StateSet setD = delta(s, c);
+			for (Character c : dfa.alphabet) {
+				StateSet setD = dfa.delta(s, c);
 				if(setD.size() > 0) {
 					State s2 = (setD.get(0)).cloneState();
 					if(s2.isFinal()) {
@@ -178,9 +203,7 @@ public class DFA extends FA {
 			}
 		}
 
-		DFA newDFA = new DFA(ss, a, t);
-
-		return newDFA;
+		return new DFA(ss, a, t);
 	}
 
 	/**
@@ -228,7 +251,7 @@ public class DFA extends FA {
 		for (State s : ss) {
 			if(s.isInitial()) {
 				s.setInitial(false);
-				t.add(new Tupla<State,Character,State>(newInitState, '/', s));
+				t.add(new Tupla<State,Character,State>(newInitState, null, s));
 			} 
 		}
 		
@@ -264,50 +287,4 @@ public class DFA extends FA {
 
 		return new DFA(ss, a, t);
 	}
-
-
-	/*
-	 * Implementar la concatenacion entre dos DFA
-	 */
-	// public DFA concat(DFA dfa) throws AutomatonException, CloneNotSupportedException {
-	// 	StateSet states1 = this.states;
-	// 	StateSet states2 = dfa.states;
-	// 	StateSet newStates = states1.union(states2);
-
-	// 	Alphabet alphabet1 = this.alphabet;
-	// 	Alphabet alphabet2 = dfa.alphabet;
-	// 	Alphabet newAlphabet = alphabet1.union(alphabet2);
-
-	// 	HashMap<State, HashMap<Character, StateSet>> delta1 = this.delta;
-	// 	HashMap<State, HashMap<Character, StateSet>> delta2 = dfa.delta;
-	// 	HashMap<State, HashMap<Character, StateSet>> newDelta = new HashMap<State, HashMap<Character, StateSet>>();
-	// 	//falta chequear caso donde dos automatas contengan estados con el mismo nombre
-	// 	newDelta.putAll(delta1);
-	// 	newDelta.putAll(delta2);
-	// 	//aqui consideramos que el primer automata tiene solo 1 estado final
-	// 	//en caso de ser necesario en el for each hay que obtener todos los finales en un StateSet
-	// 	//para luego crear correspondientes transiciones
-	// 	Set<State> values1 = delta1.keySet();
-	// 	State final1 = null;
-	// 	for (State s1 : values1) {
-	// 		if (s1.isFinal()) 
-	// 			final1 = new State(s1);
-	// 	}
-
-	// 	Set<State> values2 = delta2.keySet();
-	// 	State initial2 = null;
-	// 	for (State s2 : values2) {
-	// 		if (s2.isInitial()) 
-	// 			initial2 = new State(s2);
-	// 	}
-	// 	StateSet singleton = new StateSet();
-	// 	singleton.addState(initial2);
-
-	// 	HashMap<Character, StateSet> innerMap = newDelta.get(final1);
-	// 	innerMap.put('/', singleton);
-	// 	NFALambda NFALaux = new NFALambda(newStates, newAlphabet, newDelta);
-	// 	DFA finalAutomaton = NFALaux.toDFA();
-	// 	return finalAutomaton;
-	// }
-
 }
