@@ -39,13 +39,6 @@ public class StateSet implements Iterable<State>, Cloneable {
 		return freshState;
 	}
 	
-	public State addState(State s) throws AutomatonException {
-		if (s.getName() == null || s.getName() == "") {
-			throw new AutomatonException("Node name invalid");
-		}
-		states.add(s);
-		return s;
-	}
 
 	public State addState(String name, boolean isInitial, boolean isFinal) throws AutomatonException{
 		if(name == null || name =="")
@@ -61,6 +54,16 @@ public class StateSet implements Iterable<State>, Cloneable {
 		State freshState = new State(name, isInitial, isFinal);
 		states.add(freshState);
 		return freshState;
+	}
+
+	// Simplified addState, does not check if the state exists in the set
+	public State addState(State s) throws AutomatonException {
+		if (s.getName() == null || s.getName() == "") {
+			throw new AutomatonException("Node name invalid");
+		}
+
+		states.add(s);
+		return s;
 	}
 
 	public void deleteState(String name) {

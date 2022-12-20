@@ -1,8 +1,9 @@
 package tp1.automatas;
 
-import java.util.Set;
-
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,12 +11,14 @@ import org.junit.Test;
 import tp1.utils.DotReader;
 import tp1.utils.Tupla;
 
-public class DFAAutomatonMethodsTests1 {
-
+public class NFAAutomatonMethodsTests1 {
+    
+    private static NFA nfa;
 	private static StateSet s;
 	private static Alphabet a;
 	private static Set<Tupla<State,Character,State>> t;
 
+    private static NFA nfa2;
 	private static StateSet s2;
 	private static Alphabet a2;
 	private static Set<Tupla<State,Character,State>> t2;
@@ -27,13 +30,13 @@ public class DFAAutomatonMethodsTests1 {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception{
 		// DFA
-		DotReader dotReader = new DotReader("src/test/java/tp1/dfa1");
+		DotReader dotReader = new DotReader("src/test/java/tp1/dfa2");
 		dotReader.parse();
 
 		s = dotReader.getNodes();
 		a = dotReader.getSymbols();
 		t = dotReader.getArcs();
-		
+		nfa = new NFA(s, a, t);
 
 		// NFA
 		DotReader dotReader2 = new DotReader("src/test/java/tp1/nfa1");
@@ -42,6 +45,7 @@ public class DFAAutomatonMethodsTests1 {
 		s2 = dotReader2.getNodes();
 		a2 = dotReader2.getSymbols();
 		t2 = dotReader2.getArcs();
+        nfa2 = new NFA(s2, a2, t2);
 
 		// NFALambda
 		DotReader dotReader3 = new DotReader("src/test/java/tp1/nfalambda1");
@@ -54,22 +58,19 @@ public class DFAAutomatonMethodsTests1 {
 
 	@Test
 	public void testBrokenConstructor() throws IllegalArgumentException, AutomatonException {
-		assertThrows(IllegalArgumentException.class, ()-> {
-			new DFA(s, a, t);
-		});
+		assertTrue(nfa.repOk());
 	}
 
 	@Test
 	public void testBrokenConstructor2() {
-		assertThrows(IllegalArgumentException.class, ()-> {
-			new DFA(s2, a2, t2);
-		});
+		assertTrue(nfa2.repOk());
 	}
 
 	@Test
 	public void testBrokenConstructor3() {
 		assertThrows(IllegalArgumentException.class, ()-> {
-			new DFA(s3, a3, t3);
+			new NFA(s3, a3, t3);
 		});
 	}
+
 }

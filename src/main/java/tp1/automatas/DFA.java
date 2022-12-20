@@ -24,6 +24,9 @@ public class DFA extends FA {
 			singletonStateSet = new StateSet();
 			
 			if (states.belongTo(tupla.first().getName()) != null) {
+				if(tupla.second() == null) {
+					throw new IllegalArgumentException("Invalid transitions for NFA");
+				}
 				//Gets the map value for the current state if exists
 				if (this.delta.containsKey(tupla.first())) {
 					stateArcs = this.delta.get(tupla.first());
@@ -72,7 +75,7 @@ public class DFA extends FA {
 
 	@Override
 	public boolean accepts(String string) throws IllegalArgumentException, AutomatonException{
-		assert repOk();
+		// assert repOk();
 		if (string == null) throw new IllegalArgumentException("String can't be null");
 		if (!verifyString(string)) 
 			throw new IllegalArgumentException("The string's characters must belong to automaton's alphabet");
@@ -85,16 +88,12 @@ public class DFA extends FA {
 			} catch (Exception e) {
 				return false;
 			}
-			System.out.println("im "+c+"!");
-			System.out.println(s.toString());
 			if (singletonSet.size() > 0) {
 				s = singletonSet.get(0);
-				System.out.println("Image state"+s.toString());
 			} else {
 				return false;
 			}
 		}
-		System.out.println("is final "+s.isFinal());
 		return s.isFinal();
 	}
 	
@@ -161,8 +160,6 @@ public class DFA extends FA {
 	 * @returns a new DFA accepting the language's complement.
 	 */
 	public DFA complement() throws CloneNotSupportedException, AutomatonException {
-		
-		assert repOk();
 
 		DFA dfa = cloneDFA();
 
@@ -216,10 +213,10 @@ public class DFA extends FA {
 	 */
 	public DFA intersection(DFA other) throws Exception {
 
-		assert repOk();
-		assert other.repOk();
+		DFA a1 = cloneDFA();
+		DFA a2 = other.cloneDFA();
 		
-		return (complement().union(other.complement())).complement();
+		return (a1.complement().union(a2.complement())).complement();
 	}
 
 	/**
@@ -232,8 +229,6 @@ public class DFA extends FA {
 	 * @returns a new DFA accepting the union of both languages.
 	 */
 	public DFA union(DFA other) throws AutomatonException, Exception {
-		assert repOk();
-		assert other.repOk();
 		
 		// New initial state
 		State newInitState = new State("q'", true, false);
@@ -283,7 +278,6 @@ public class DFA extends FA {
 
 		//NFALambda newNFA = new NFALambda(ss, a, t);
 		//DFA newDFA = newNFA.toDFA();
-		//assert newDFA.repOk();
 
 		return new DFA(ss, a, t);
 	}

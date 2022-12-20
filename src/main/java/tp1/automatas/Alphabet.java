@@ -78,7 +78,7 @@ public class Alphabet implements Iterable<Character> {
 	public String toString() {
 		String str = "( ";
 		for (Character c : symbols) {
-			str += c + " ";
+			str += c + ", ";
 		}
 		return str + ")";
 	}

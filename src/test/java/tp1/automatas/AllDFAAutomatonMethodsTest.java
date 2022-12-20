@@ -10,8 +10,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	DFAAutomatonMethodsTests2.class,
 	DFAAutomatonMethodsTests3.class,
 	DFAAutomatonMethodsTests4.class,
-	DFAAutomatonMethodsTests5.class,
-	CloneTest.class
+	DFAAutomatonMethodsTests5.class
 })
 
 public class AllDFAAutomatonMethodsTest {

@@ -44,7 +44,7 @@ public class NFALambda extends FA {
 			}
 		}
 
-		assert repOk();
+		//assert repOk();
 	}
 
 	// public NFALambda(StateSet states,	Alphabet alphabet, HashMap<State, HashMap<Character, StateSet>> delta) throws IllegalArgumentException, AutomatonException{
@@ -295,24 +295,27 @@ public class NFALambda extends FA {
 	 */
 	@Override
 	public boolean repOk() {
-
+		if (states == null && alphabet == null && delta == null) {
+			return true;
+		}
+		
 		int initState = 0;
 
 		Set<State> ss = this.delta.keySet();
-
-		if (alphabet.contains('/'))
-			return false;
 
 		for (State s : this.states) {
 			if (s.isInitial())
 				initState++;
 		}
 
-		if (initState != 1)
+		if (initState != 1) {
+			System.out.println("me fui 1");
 			return false;
+		}
 
 		for (State s : ss) {
 			if (!states.contains(s)) {
+				System.out.println("me fui 2");
 				return false;
 			} else {
 				Map<Character, StateSet> m = delta.get(s);
@@ -320,13 +323,16 @@ public class NFALambda extends FA {
 
 				for (Character ch : c) {
 					if ((ch != null) && (!alphabet.contains(ch))) {
+						System.out.println("me fui 3");
 						return false;
-					} else {
+					} else if ((ch == null) || (alphabet.contains(ch))) {
 						StateSet p = new StateSet();
 						p = m.get(ch);
 						for (State state : p) {
-							if (!states.contains(state))
+							if (!states.contains(state)) {
+								System.out.println("me fui 4");
 								return false;
+							}
 						}
 					}
 				}

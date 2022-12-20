@@ -25,6 +25,9 @@ public class NFA extends FA {
 			currentStateSet = new StateSet();
 			
 			if (states.belongTo(tupla.first().getName()) != null) {
+				if(tupla.second() == null) {
+					throw new IllegalArgumentException("Invalid transitions for NFA");
+				}
 				//Gets the hash mapped for the current state if exists
 				if (this.delta.containsKey(tupla.first())) {
 					stateArcs = this.delta.get(tupla.first());
@@ -44,52 +47,41 @@ public class NFA extends FA {
 			}
 		}
 
-		assert repOk();
+		//assert repOk();
 	}
 
 	@Override
 	public boolean accepts(String string) throws AutomatonException {
-		assert repOk();
+		//assert repOk();
 		if (string == null) throw new IllegalArgumentException("String can't be null");
-		if (!verifyString(string)) 
-			throw new IllegalArgumentException("The string's characters must belong to automaton's alphabet");
+		if (!verifyString(string)) throw new IllegalArgumentException("The string's characters must belong to automaton's alphabet");
+		if(string == "" && initialState().isFinal()) return true;
 		
-		State s = this.initialState();
-		return assistantAccepts(s, string);
-	}
+		Stack<Tupla<State, Integer, Integer>> p = new Stack<Tupla<State, Integer, Integer>>();
+		p.push(new Tupla<State,Integer,Integer>(initialState(), 0, null));
 
-	public boolean assistantAccepts(State s, String str) throws AutomatonException {
-		StateSet ss = new StateSet();
-		StateSet ssl = new StateSet();
-		if(str != null) {
-			ss = delta(s, str.charAt(0));
-			ssl = delta(s, null);
-			if(ssl.size() > 0) {
-				ss.union(assistantAccepts2(ssl, str.charAt(0)));
-			}
-			if(ss.size() > 0) {
-				for (State state : ss) {
-					if(str.length()==1) {
-						if(state.isFinal()) {
-							return true;
-						}
-					} else {
-						assistantAccepts(state, str.substring(1));
-					}
-				}
-			} else {
+		while (!p.empty()) {
+
+			Tupla<State,Integer,Integer> t = p.pop();
+			if((t.first().isFinal()) && (string.length()==t.second())) {
+				return true;
+			} else if(string.length()<t.second()) {
 				return false;
 			}
-		}
-		return false;
-	} 
 
-	public StateSet assistantAccepts2(StateSet ssl, Character c) throws AutomatonException {
-		StateSet ss = new StateSet();
-		for (State state : ssl) {
-			ss.union(delta(state, c));
+			StateSet ss = new StateSet();
+			try {
+				ss = delta(t.first(), string.charAt(t.second()));
+			} catch (Exception e) {
+				continue;
+			}
+
+			for (State s : ss) {
+				p.push(new Tupla<State,Integer,Integer>(s, t.second()+1, null));
+			}
 		}
-		return ss;
+
+		return false;
 	}
 
 	/**
@@ -99,7 +91,10 @@ public class NFA extends FA {
 	 */
 	@Override
 	public boolean repOk() {
-		
+		if (states == null && alphabet == null && delta == null) {
+			return true;
+		}
+
 		int initState = 0;
 
 		Set<State> ss = this.delta.keySet();
@@ -120,7 +115,7 @@ public class NFA extends FA {
 				Set<Character> c = m.keySet();
 
 				for (Character ch : c) {
-					if (!alphabet.contains(ch)) {
+					if (!alphabet.contains(ch) || (ch == null)) {
 						return false;
 					} else {
 						StateSet p = new StateSet();
